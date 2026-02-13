@@ -327,6 +327,8 @@
         </div>
       </transition>
 
+
+
       <!-- Page Header -->
       <div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -763,6 +765,29 @@
           </div>
         </div>
       </div>
+
+      <!-- Google AdSense Placeholder -->
+      <div class="mt-8 mb-6">
+        <!-- PASTE YOUR GOOGLE ADSENSE CODE HERE -->
+        <!-- Example:
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        -->
+        
+        <!-- Visual Placeholder for Development -->
+        <div class="w-full h-[90px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group">
+          <span class="text-xs font-semibold uppercase tracking-wider mb-1">Advertisement Space</span>
+          <span class="text-[10px] text-gray-400">728 x 90 Leaderboard</span>
+          
+          <!-- Hover effect to show it's editable -->
+          <div class="absolute inset-0 bg-gray-500 bg-opacity-0 group-hover:bg-opacity-5 transition-all flex items-center justify-center">
+            <span class="opacity-0 group-hover:opacity-100 bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-200">
+              Replace with AdSense Code
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -1102,47 +1127,6 @@ const downloadInvoicePDF = async (invoice) => {
   }
 }
 
-// Download invoice PDF
-// const downloadInvoicePDF = async (invoice) => {
-//   try {
-//     // Load html2pdf library if not already loaded
-//     if (typeof window.html2pdf === 'undefined') {
-//       await loadScript(
-//         'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
-//       )
-//     }
-
-//     // Create temporary element with safe colors
-//     const element = createInvoiceElement(invoice)
-//     document.body.appendChild(element)
-
-//     // Convert any oklch/modern colors to hex (fixes html2canvas compatibility)
-//     convertColorsToHex(element)
-
-//     const opt = {
-//       margin: 10,
-//       filename: `invoice-${invoice.number}.pdf`,
-//       image: { type: 'jpeg', quality: 0.98 },
-//       html2canvas: {
-//         scale: 2,
-//         useCORS: true,
-//         letterRendering: true,
-//         backgroundColor: '#ffffff',
-//       },
-//       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-//     }
-
-//     await window.html2pdf().set(opt).from(element).save()
-
-//     // Remove temporary element
-//     document.body.removeChild(element)
-
-//     showToast('PDF downloaded successfully!', 'success')
-//   } catch (error) {
-//     console.error('PDF generation error:', error)
-//     showToast('Failed to generate PDF. Please try again.', 'error')
-//   }
-// }
 
 // Create invoice element for PDF
 const createInvoiceElement = (invoice) => {
@@ -1152,138 +1136,6 @@ const createInvoiceElement = (invoice) => {
   div.innerHTML = generateInvoiceHTML(invoice)
   return div
 }
-
-// Generate invoice HTML with safe hex colors
-// const generateInvoiceHTML = (invoice) => {
-//   const data = invoice.data
-//   const currencySymbol = getCurrencySymbol(data.currency)
-//   const subtotal = calculateSubtotal(data)
-//   const tax = calculateTax(data)
-//   const discount = calculateDiscount(data)
-
-//   return `
-//     <div style="background: #ffffff; border-radius: 8px; padding: 40px; font-family: Arial, sans-serif;">
-//       <!-- Header -->
-//       <div style="display: flex; justify-content: space-between; margin-bottom: 32px; gap: 24px;">
-//         <div style="display: flex; gap: 16px;">
-//           <div style="width: 64px; height: 64px; background: #eff6ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
-//             ${
-//               data.logo
-//                 ? `<img src="${data.logo}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; padding: 8px;"/>`
-//                 : `<svg style="width: 40px; height: 40px; color: #2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-//                    </svg>`
-//             }
-//           </div>
-//           <div>
-//             <div style="font-weight: bold; font-size: 18px; color: #111827;">${data.businessName || 'Business Name'}</div>
-//             <div style="font-size: 14px; color: #4b5563; margin-top: 4px;">${data.businessAddress || 'Address'}</div>
-//             <div style="font-size: 14px; color: #4b5563;">${data.businessEmail || 'email@example.com'}</div>
-//             <div style="font-size: 14px; color: #4b5563;">${data.businessPhone || 'Phone'}</div>
-//           </div>
-//         </div>
-//         <div style="text-align: right;">
-//           <h1 style="font-size: 36px; font-weight: bold; color: #111827; margin: 0 0 8px 0;">INVOICE</h1>
-//           <div style="font-size: 14px; color: #4b5563; font-weight: 500;"># ${invoice.number}</div>
-//           <div style="font-size: 14px; color: #4b5563; margin-top: 8px;">
-//             <div style="font-weight: 500;">Date: ${formatDate(invoice.date)}</div>
-//             <div style="font-weight: 500;">Due: ${formatDate(data.dueDate)}</div>
-//           </div>
-//           <div style="margin-top: 8px;">
-//             <span style="font-size: 12px; padding: 4px 12px; border-radius: 9999px; font-weight: 600; ${
-//               invoice.status === 'PAID'
-//                 ? 'background: #dcfce7; color: #15803d;'
-//                 : 'background: #f3f4f6; color: #374151;'
-//             }">${invoice.status}</span>
-//           </div>
-//         </div>
-//       </div>
-
-//       <!-- Bill To -->
-//       <div style="margin-bottom: 32px; padding: 16px; background: #f9fafb; border-radius: 8px;">
-//         <div style="font-size: 12px; font-weight: bold; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Bill To</div>
-//         <div style="font-weight: bold; font-size: 16px; color: #111827;">${invoice.client}</div>
-//         <div style="font-size: 14px; color: #4b5563; margin-top: 4px;">${data.clientAddress || 'Client Address'}</div>
-//         <div style="font-size: 14px; color: #4b5563;">${data.clientEmail || 'client@example.com'}</div>
-//       </div>
-
-//       <!-- Line Items -->
-//       <table style="width: 100%; margin-bottom: 32px; border-collapse: collapse;">
-//         <thead>
-//           <tr style="border-bottom: 2px solid #d1d5db;">
-//             <th style="text-align: left; font-size: 14px; font-weight: bold; color: #374151; padding-bottom: 12px; padding-right: 16px;">Description</th>
-//             <th style="text-align: center; font-size: 14px; font-weight: bold; color: #374151; padding-bottom: 12px; padding-left: 8px; padding-right: 8px;">Qty</th>
-//             <th style="text-align: center; font-size: 14px; font-weight: bold; color: #374151; padding-bottom: 12px; padding-left: 8px; padding-right: 8px;">Rate</th>
-//             <th style="text-align: right; font-size: 14px; font-weight: bold; color: #374151; padding-bottom: 12px; padding-left: 16px;">Amount</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           ${data.lineItems
-//             .map(
-//               (item) => `
-//             <tr style="border-bottom: 1px solid #e5e7eb;">
-//               <td style="padding: 12px 16px 12px 0; font-size: 14px; color: #111827;">${item.description || 'Item'}</td>
-//               <td style="padding: 12px 8px; font-size: 14px; color: #374151; text-align: center;">${formatNumber(item.quantity)}</td>
-//               <td style="padding: 12px 8px; font-size: 14px; color: #374151; text-align: center;">${currencySymbol}${formatNumber(item.rate)}</td>
-//               <td style="padding: 12px 0 12px 16px; font-size: 14px; color: #111827; text-align: right; font-weight: 500;">${currencySymbol}${formatNumber(item.quantity * item.rate)}</td>
-//             </tr>
-//           `,
-//             )
-//             .join('')}
-//         </tbody>
-//       </table>
-
-//       <!-- Totals -->
-//       <div style="display: flex; justify-content: flex-end; margin-bottom: 32px;">
-//         <div style="width: 320px; background: #f9fafb; padding: 16px; border-radius: 8px;">
-//           <div style="display: flex; justify-content: space-between; font-size: 14px; color: #374151; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb;">
-//             <span style="font-weight: 600;">Payment Terms</span>
-//             <span>${data.paymentTerms}</span>
-//           </div>
-//           <div style="display: flex; justify-content: space-between; font-size: 14px; color: #374151; margin-bottom: 8px;">
-//             <span>Subtotal</span>
-//             <span>${currencySymbol}${formatNumber(subtotal)}</span>
-//           </div>
-//           ${
-//             data.taxPercentage > 0
-//               ? `
-//             <div style="display: flex; justify-content: space-between; font-size: 14px; color: #374151; margin-bottom: 8px;">
-//               <span>Tax (${formatNumber(data.taxPercentage)}%)</span>
-//               <span>${currencySymbol}${formatNumber(tax)}</span>
-//             </div>
-//           `
-//               : ''
-//           }
-//           ${
-//             data.discount > 0
-//               ? `
-//             <div style="display: flex; justify-content: space-between; font-size: 14px; color: #374151; margin-bottom: 8px;">
-//               <span>Discount (${formatNumber(data.discount)}%)</span>
-//               <span>-${currencySymbol}${formatNumber(discount)}</span>
-//             </div>
-//           `
-//               : ''
-//           }
-//           <div style="border-top: 2px solid #d1d5db; padding-top: 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
-//             <span style="font-size: 16px; font-weight: bold; color: #111827;">TOTAL DUE</span>
-//             <span style="font-size: 24px; font-weight: bold; color: #111827;">${currencySymbol}${formatNumber(invoice.total)}</span>
-//           </div>
-//         </div>
-//       </div>
-
-//       <!-- Notes -->
-//       <div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-//         <div style="font-size: 12px; font-weight: bold; color: #374151; text-transform: uppercase; margin-bottom: 8px;">Notes</div>
-//         <div style="font-size: 14px; color: #374151; line-height: 1.6;">${data.notes || 'Thank you for your business.'}</div>
-//       </div>
-
-//       <!-- Footer -->
-//       <div style="padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center;">
-//         <p style="font-size: 12px; color: #9ca3af;">Generated with SwiftInvoice - Professional Invoice Solutions</p>
-//       </div>
-//     </div>
-//   `
-// }
 
 // Convert oklch and modern CSS colors to hex for html2canvas compatibility
 const convertColorsToHex = (element) => {
