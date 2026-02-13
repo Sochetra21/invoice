@@ -609,20 +609,14 @@
                 <button
                   @click="editInvoice(invoice)"
                   class="p-1 text-gray-400 hover:text-blue-600 transition"
-                  title="View"
+                  title="Edit"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                     />
                   </svg>
                 </button>
@@ -725,7 +719,7 @@
             </div>
             <div class="flex items-center gap-2 pt-3 border-t border-gray-200">
               <button
-                @click="viewInvoice(invoice)"
+                @click="editInvoice(invoice)"
                 class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -733,10 +727,10 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                   />
                 </svg>
-                View
+                Edit
               </button>
               <button
                 @click="downloadInvoicePDF(invoice)"
@@ -775,12 +769,14 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-// Add this import at the top if using Vue Router
 import { useRouter } from 'vue-router'
+import { useInvoiceStore } from '@/stores/invoiceStore'
+
+// Router and Store
 const router = useRouter()
+const invoiceStore = useInvoiceStore()
 
 // State
-const invoices = ref([])
 const searchQuery = ref('')
 const statusFilter = ref('ALL')
 const showDeleteConfirm = ref(false)
@@ -801,20 +797,11 @@ const showToast = (message, type = 'success') => {
   }, 3000)
 }
 
-// Load invoices from localStorage
-const loadInvoices = () => {
-  try {
-    const stored = localStorage.getItem('invoices')
-    if (stored) {
-      invoices.value = JSON.parse(stored)
-      // Sort by date (newest first)
-      invoices.value.sort((a, b) => new Date(b.date) - new Date(a.date))
-    }
-  } catch (error) {
-    console.error('Failed to load invoices:', error)
-    showToast('Failed to load invoices', 'error')
-  }
-}
+// Get invoices from store
+const invoices = computed(() => {
+  // Sort by date (newest first)
+  return [...invoiceStore.allInvoices].sort((a, b) => new Date(b.date) - new Date(a.date))
+})
 
 // Computed properties for stats
 const paidCount = computed(() => {
@@ -919,10 +906,12 @@ const confirmDelete = () => {
   if (!invoiceToDelete.value) return
 
   try {
-    invoices.value = invoices.value.filter((inv) => inv.id !== invoiceToDelete.value.id)
-    localStorage.setItem('invoices', JSON.stringify(invoices.value))
-
-    showToast(`Invoice ${invoiceToDelete.value.number} deleted successfully`, 'success')
+    const success = invoiceStore.deleteInvoice(invoiceToDelete.value.id)
+    if (success) {
+      showToast(`Invoice ${invoiceToDelete.value.number} deleted successfully`, 'success')
+    } else {
+      showToast('Failed to delete invoice', 'error')
+    }
     showDeleteConfirm.value = false
     invoiceToDelete.value = null
   } catch (error) {
@@ -931,22 +920,9 @@ const confirmDelete = () => {
   }
 }
 
-// =================================================================
-// ADD THIS TO YOUR HISTORY PAGE SCRIPT SECTION
-// =================================================================
-
-// REMOVE this state (we don't need view modal anymore)
-// const viewingInvoice = ref(null)
-
-// REPLACE viewInvoice function with editInvoice:
+// Navigate to edit page
 const editInvoice = (invoice) => {
-  // Route to edit page with invoice ID
-  if (router) {
-    router.push(`/edit/${invoice.id}`)
-  } else {
-    // Fallback if router not available
-    window.location.href = `/#/edit/${invoice.id}`
-  }
+  router.push(`/edit/${invoice.id}`)
 }
 
 // UPDATE generateInvoiceHTML to match cleaner design from invoice component:
@@ -1382,10 +1358,8 @@ const clearFilters = () => {
   statusFilter.value = 'ALL'
 }
 
-// Load invoices on mount
-onMounted(() => {
-  loadInvoices()
-})
+// Invoices are automatically loaded from store
+
 </script>
 
 <style scoped>

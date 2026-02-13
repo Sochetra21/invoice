@@ -40,11 +40,26 @@
         </div>
       </transition>
 
+      <!-- Page Header -->
+      <div class="mb-4">
+        <div class="flex items-center gap-3 mb-2">
+          <router-link to="/history" class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+          </router-link>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Edit Invoice</h1>
+        </div>
+        <p class="text-gray-600 text-sm md:text-base ml-14">
+          Update invoice #{{ invoice.invoiceNumber || 'Loading...' }}
+        </p>
+      </div>
+
       <!-- Action Buttons -->
       <div class="mb-4 md:mb-6 flex flex-wrap items-center gap-2 md:gap-3">
         <button
-          @click="saveInvoice"
-          :disabled="!isFormValid"
+          @click="updateInvoice"
+          :disabled="!isFormValid || loading"
           class="flex items-center gap-2 px-3 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,8 +70,8 @@
               d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
             />
           </svg>
-          <span class="hidden sm:inline">Save Invoice</span>
-          <span class="sm:hidden">Save</span>
+          <span class="hidden sm:inline">Update Invoice</span>
+          <span class="sm:hidden">Update</span>
         </button>
         <button
           @click="downloadPDF"
@@ -721,6 +736,17 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useInvoiceStore } from '@/stores/invoiceStore'
+
+// Router, Route and Store
+const router = useRouter()
+const route = useRoute()
+const invoiceStore = useInvoiceStore()
+
+// Loading state
+const loading = ref(true)
+const invoiceId = ref(null)
 
 // Constants
 const STATUS = {
@@ -923,44 +949,31 @@ const togglePaidStatus = () => {
   invoice.value.status = invoice.value.status === STATUS.PAID ? STATUS.DRAFT : STATUS.PAID
 }
 
-// Save invoice to localStorage with error handling
-const saveInvoice = () => {
+// Update invoice using store
+const updateInvoice = () => {
   if (!isFormValid.value) {
     showToast('Please fill in all required fields correctly', 'error')
     return
   }
 
   try {
-    const invoices = JSON.parse(localStorage.getItem('invoices') || '[]')
-
-    const invoiceData = {
-      id: Date.now(),
-      number: invoice.value.invoiceNumber,
-      client: invoice.value.clientName,
-      date: invoice.value.date,
-      status: invoice.value.status,
-      total: total.value,
-      data: invoice.value,
+    const success = invoiceStore.updateInvoice(invoiceId.value, invoice.value)
+    if (success) {
+      showToast('Invoice updated successfully!', 'success')
+      // Navigate to history page
+      setTimeout(() => {
+        router.push('/history')
+      }, 1500)
+    } else {
+      showToast('Failed to update invoice', 'error')
     }
-
-    invoices.push(invoiceData)
-    localStorage.setItem('invoices', JSON.stringify(invoices))
-
-    showToast('Invoice saved successfully!', 'success')
-
-    // Only navigate if router exists
-    setTimeout(() => {
-      if (typeof window !== 'undefined' && window.$router) {
-        window.$router.push('/history')
-      }
-    }, 1500)
   } catch (error) {
     if (error.name === 'QuotaExceededError') {
       showToast('Storage quota exceeded. Please clear some old invoices.', 'error')
     } else {
-      showToast('Failed to save invoice. Please try again.', 'error')
+      showToast('Failed to update invoice. Please try again.', 'error')
     }
-    console.error('Save error:', error)
+    console.error('Update error:', error)
   }
 }
 
@@ -1215,11 +1228,24 @@ const loadScript = (src) => {
   })
 }
 
-// Set default due date on mount
+// Load invoice data on mount
 onMounted(() => {
-  const today = new Date()
-  today.setDate(today.getDate() + 30)
-  invoice.value.dueDate = today.toISOString().split('T')[0]
+  const id = route.params.id
+  invoiceId.value = id
+  
+  const foundInvoice = invoiceStore.getInvoiceById(id)
+  
+  if (foundInvoice && foundInvoice.data) {
+    // Populate form with existing data
+    invoice.value = { ...foundInvoice.data }
+  } else {
+    showToast('Invoice not found', 'error')
+    setTimeout(() => {
+      router.push('/history')
+    }, 2000)
+  }
+  
+  loading.value = false
 })
 </script>
 
