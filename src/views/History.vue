@@ -950,7 +950,7 @@ const editInvoice = (invoice) => {
   router.push(`/edit/${invoice.id}`)
 }
 
-// UPDATE generateInvoiceHTML to match cleaner design from invoice component:
+// UPDATE the generateInvoiceHTML function to match the invoice creation page design:
 const generateInvoiceHTML = (invoice) => {
   const data = invoice.data
   const currencySymbol = getCurrencySymbol(data.currency)
@@ -973,10 +973,10 @@ const generateInvoiceHTML = (invoice) => {
             }
           </div>
           <div>
-            <div style="font-weight: bold; font-size: 18px; color: #111827; font-family: Arial, Helvetica, sans-serif; line-height: 1.4;">${data.businessName || 'Business Name'}</div>
-            <div style="font-size: 14px; color: #4b5563; margin-top: 4px; font-family: Arial, Helvetica, sans-serif;">${data.businessAddress || 'Address'}</div>
+            <div style="font-weight: bold; font-size: 18px; color: #111827; font-family: Arial, Helvetica, sans-serif; line-height: 1.4;">${data.businessName || 'Your Business Name'}</div>
+            <div style="font-size: 14px; color: #4b5563; margin-top: 4px; font-family: Arial, Helvetica, sans-serif;">${data.businessAddress || 'Business Address'}</div>
             <div style="font-size: 14px; color: #4b5563; font-family: Arial, Helvetica, sans-serif;">${data.businessEmail || 'email@example.com'}</div>
-            <div style="font-size: 14px; color: #4b5563; font-family: Arial, Helvetica, sans-serif;">${data.businessPhone || 'Phone'}</div>
+            <div style="font-size: 14px; color: #4b5563; font-family: Arial, Helvetica, sans-serif;">${data.businessPhone || 'Phone Number'}</div>
           </div>
         </div>
         <div style="text-align: right;">
@@ -1019,7 +1019,7 @@ const generateInvoiceHTML = (invoice) => {
             .map(
               (item) => `
             <tr style="border-bottom: 1px solid #e5e7eb;">
-              <td style="padding: 12px 16px 12px 0; font-size: 14px; color: #111827; font-family: Arial, Helvetica, sans-serif;">${item.description || 'Item'}</td>
+              <td style="padding: 12px 16px 12px 0; font-size: 14px; color: #111827; font-family: Arial, Helvetica, sans-serif;">${item.description || 'Item Description'}</td>
               <td style="padding: 12px 8px; font-size: 14px; color: #374151; text-align: center; font-family: Arial, Helvetica, sans-serif;">${formatNumber(item.quantity)}</td>
               <td style="padding: 12px 8px; font-size: 14px; color: #374151; text-align: center; font-family: Arial, Helvetica, sans-serif;">${currencySymbol}${formatNumber(item.rate)}</td>
               <td style="padding: 12px 0 12px 16px; font-size: 14px; color: #111827; text-align: right; font-weight: 500; font-family: Arial, Helvetica, sans-serif;">${currencySymbol}${formatNumber(item.quantity * item.rate)}</td>
