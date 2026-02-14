@@ -769,7 +769,7 @@ const STATUS = {
 }
 
 const MAX_LINE_ITEMS = 50
-const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 
 // Refs
@@ -866,7 +866,7 @@ const handleLogoUpload = (event) => {
 
   // Validate file size
   if (file.size > MAX_FILE_SIZE) {
-    showToast('File size must be less than 2MB', 'error')
+    showToast('File size must be less than 5MB', 'error')
     return
   }
 
