@@ -1,59 +1,76 @@
 <template>
   <Transition name="modal">
-    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <!-- Backdrop -->
-      <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" @click="close"></div>
+    <div v-if="show" class="modal-overlay" @click="handleOverlayClick">
+      <div class="modal-container" @click.stop>
+        <!-- Close Button (only shows after countdown) -->
+        <button 
+          v-if="canSkip" 
+          class="modal-close" 
+          @click="closeModal" 
+          aria-label="Close"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
 
-      <!-- Modal Content -->
-      <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all">
-        
-        <!-- Header -->
-        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Support</h3>
-          <button @click="close" class="text-gray-400 hover:text-gray-600 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Ad Body -->
-        <div class="p-6 flex flex-col items-center">
-           <!-- Placeholder for Ad Content -->
-          <!-- Buy Me a Coffee Section -->
-          <!-- Buy Me a Coffee Section -->
-          <a href="https://buymeacoffee.com/sozin" target="_blank" rel="noopener noreferrer" 
-             class="w-full bg-[#FFDD00] rounded-xl flex flex-col items-center justify-center text-gray-800 mb-6 p-6 relative overflow-hidden shadow-sm hover:shadow-md transition-all group hover:-translate-y-1 block cursor-pointer">
+        <!-- Modal Content -->
+        <div class="modal-content">
+          <!-- 
+            ============================================
+            PASTE YOUR AD CODE HERE
+            ============================================
             
-            <div class="relative z-10 flex flex-col items-center">
-              <span class="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-300">☕</span>
-              <span class="font-bold text-lg mb-1">Buy me a coffee</span>
-              <span class="text-sm font-medium text-gray-700 text-center">Support the developer to keep this tool free!</span>
-              
-              <div class="mt-4 px-6 py-2 bg-black text-white rounded-full font-bold text-sm shadow-md group-hover:bg-gray-800 transition-colors">
-                Support Now
-              </div>
+            Example for Google AdSense (Responsive):
+            
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+              (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            
+            Or for Video Ads:
+            <div id="video-ad-container"></div>
+            <script>
+              // Your video ad script
+            </script>
+            
+            Or other ad networks - paste their code here!
+            ============================================
+          -->
+          
+          
+          
+          
+          <!-- Don't remove this placeholder - it shows until you add real ads -->
+          <div v-if="!hasAdCode" class="ad-placeholder">
+            <div class="placeholder-icon">📢</div>
+            <h3 class="placeholder-title">Advertisement Space</h3>
+            <p class="placeholder-text">Paste your ad code in AdModal.vue</p>
+            <p class="placeholder-hint">This modal shows before PDF download</p>
+          </div>
+
+          <!-- Skip/Continue Button -->
+          <div class="modal-footer">
+            <button 
+              v-if="canSkip" 
+              class="continue-button" 
+              @click="closeModal"
+            >
+              Continue to Download →
+            </button>
+            <div v-else class="countdown-message">
+              <svg class="countdown-spinner" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Please wait {{ countdown }} seconds...</span>
             </div>
-
-            <!-- Decorative background circles -->
-            <div class="absolute -top-6 -left-6 w-24 h-24 bg-white opacity-20 rounded-full z-0 pointer-events-none"></div>
-            <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-white opacity-20 rounded-full z-0 pointer-events-none"></div>
-          </a>
-
-           <p class="text-center text-gray-600 mb-6">
-             Your download is ready! If you find this tool useful, consider supporting me.
-           </p>
-
-           <!-- Action Button -->
-           <button 
-             @click="close"
-             class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
-           >
-             <span>Continue to Download</span>
-             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-             </svg>
-           </button>
+          </div>
         </div>
       </div>
     </div>
@@ -61,25 +78,299 @@
 </template>
 
 <script setup>
-defineProps({
-  show: Boolean
+import { ref, watch, onBeforeUnmount } from 'vue'
+
+const props = defineProps({
+  show: {
+    type: Boolean,
+    default: false
+  },
+  // How long before user can skip (in seconds)
+  skipDelay: {
+    type: Number,
+    default: 5
+  }
 })
 
 const emit = defineEmits(['close'])
 
-const close = () => {
+// Set this to true once you paste your ad code above
+const hasAdCode = false
+
+const countdown = ref(props.skipDelay)
+const canSkip = ref(false)
+let countdownInterval = null
+
+// Start countdown when modal shows
+watch(() => props.show, (newVal) => {
+  if (newVal) {
+    startCountdown()
+  } else {
+    stopCountdown()
+  }
+})
+
+const startCountdown = () => {
+  countdown.value = props.skipDelay
+  canSkip.value = false
+
+  countdownInterval = setInterval(() => {
+    countdown.value--
+    
+    if (countdown.value <= 0) {
+      canSkip.value = true
+      stopCountdown()
+    }
+  }, 1000)
+}
+
+const stopCountdown = () => {
+  if (countdownInterval) {
+    clearInterval(countdownInterval)
+    countdownInterval = null
+  }
+}
+
+const closeModal = () => {
+  stopCountdown()
   emit('close')
 }
+
+const handleOverlayClick = () => {
+  if (canSkip.value) {
+    closeModal()
+  }
+}
+
+onBeforeUnmount(() => {
+  stopCountdown()
+})
 </script>
 
 <style scoped>
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+/* Modal Container */
+.modal-container {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Close Button */
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  color: #4b5563;
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal Content */
+.modal-content {
+  padding: 32px 24px 24px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ad Placeholder */
+.ad-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 48px 24px;
+  background: #f9fafb;
+  border: 2px dashed #e5e7eb;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.placeholder-icon {
+  font-size: 64px;
+}
+
+.placeholder-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #374151;
+  margin: 0;
+}
+
+.placeholder-text {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.placeholder-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Modal Footer */
+.modal-footer {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.continue-button {
+  width: 100%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+}
+
+.continue-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(37, 99, 235, 0.4);
+}
+
+.continue-button:active {
+  transform: translateY(0);
+}
+
+.countdown-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.countdown-spinner {
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+  color: #3b82f6;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Modal Transitions */
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity 0.3s ease;
 }
 
+.modal-enter-active .modal-container,
+.modal-leave-active .modal-container {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;
+}
+
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  transform: scale(0.9);
+  opacity: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .modal-container {
+    border-radius: 12px;
+    max-width: 95%;
+  }
+
+  .modal-content {
+    padding: 24px 16px 16px;
+    min-height: 250px;
+  }
+
+  .ad-placeholder {
+    padding: 32px 16px;
+  }
+
+  .placeholder-icon {
+    font-size: 48px;
+  }
+
+  .placeholder-title {
+    font-size: 20px;
+  }
+
+  .continue-button {
+    font-size: 15px;
+    padding: 14px 24px;
+  }
+}
+
+/* Custom scrollbar */
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
 </style>

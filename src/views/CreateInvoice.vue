@@ -710,42 +710,28 @@
                 <p class="text-xs text-gray-400 mb-1">
                   Generated with SwiftInvoice - Professional Invoice Solutions
                 </p>
-                <router-link 
-                  to="/donation" 
-                  class="text-[10px] text-blue-400 hover:text-blue-600 transition"
+                <button 
+                  @click="showCoffeeModal = true"
+                  class="text-[10px] text-blue-400 hover:text-blue-600 transition underline bg-transparent border-none p-0 cursor-pointer"
                 >
                   Support this free tool
-                </router-link>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div>
-        <div>
-          <div>
-            <div>
-              <!-- Google AdSense   Placeholder (Bottom) -->
-              <div class="mt-8 pt-6 border-t border-gray-100">
-                <!-- PASTE YOUR GOOGLE ADSENSE CODE HERE -->
-                <div class="w-full h-[90px] bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group">
-                  <span class="text-xs font-semibold uppercase tracking-wider mb-1">Advertisement Space</span>
-                  <span class="text-[10px] text-gray-400">728 x 90 Leaderboard</span>
-                  <div class="absolute inset-0 bg-gray-500 bg-opacity-0 group-hover:bg-opacity-5 transition-all flex items-center justify-center">
-                    <span class="opacity-0 group-hover:opacity-100 bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-200">
-                      Replace with AdSense Code
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Advertisement Space -->
+      <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+        <Adbanner size="leaderboard" />
       </div>
     </div>
 
-    <!-- Ad Modal -->
+    <!-- Interstitial Ad Modal (for PDF downloads) -->
     <AdModal :show="showAdModal" @close="handleAdClose" />
+    
+    <!-- Buy Me Coffee Modal -->
+    <BuyMeCoffee :show="showCoffeeModal" @close="showCoffeeModal = false" />
   </div>
 </template>
 
@@ -754,13 +740,16 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoiceStore'
 import AdModal from '@/components/AdModal.vue'
+import Adbanner from '@/components/Adbanner.vue'
+import BuyMeCoffee from '@/components/BuyMeCoffee.vue'
 
 // Router and Store
 const router = useRouter()
 const invoiceStore = useInvoiceStore()
 
-// Ad Modal State
+// Modal States
 const showAdModal = ref(false)
+const showCoffeeModal = ref(false)
 
 // Constants
 const STATUS = {
