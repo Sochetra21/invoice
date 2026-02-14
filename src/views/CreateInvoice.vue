@@ -963,10 +963,12 @@ const saveInvoice = () => {
     invoiceStore.addInvoice(invoice.value)
     showToast('Invoice saved successfully!', 'success')
 
+
+    //no need to redirect to history page
     // Navigate to history page
-    setTimeout(() => {
-      router.push('/history')
-    }, 1500)
+    // setTimeout(() => {
+    //   router.push('/history')
+    // }, 1500)
   } catch (error) {
     if (error.name === 'QuotaExceededError') {
       showToast('Storage quota exceeded. Please clear some old invoices.', 'error')
