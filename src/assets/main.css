@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+
+#bmc-wbtn {
+  display: flex !important;
+  z-index: 9999 !important;
+}

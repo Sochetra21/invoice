@@ -9,7 +9,7 @@
         
         <!-- Header -->
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Advertisement</h3>
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Support</h3>
           <button @click="close" class="text-gray-400 hover:text-gray-600 transition">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -20,25 +20,28 @@
         <!-- Ad Body -->
         <div class="p-6 flex flex-col items-center">
            <!-- Placeholder for Ad Content -->
-           <div class="w-full h-64 bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-400 mb-6 group relative overflow-hidden">
-             
-             <!-- PASTE YOUR AD CODE HERE -->
-             <!-- <ins class="adsbygoogle" ...></ins> -->
-             
-             <span class="text-3xl mb-2">📢</span>
-             <span class="font-medium">Ad Space (300x250)</span>
-             <span class="text-xs mt-2">Support us by viewing this ad</span>
-
-              <!-- Hover effect -->
-              <div class="absolute inset-0 bg-gray-500 bg-opacity-0 group-hover:bg-opacity-5 transition-all flex items-center justify-center">
-                <span class="opacity-0 group-hover:opacity-100 bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-200">
-                  Replace with Ad Code
-                </span>
+          <!-- Buy Me a Coffee Section -->
+          <!-- Buy Me a Coffee Section -->
+          <a href="https://buymeacoffee.com/sozin" target="_blank" rel="noopener noreferrer" 
+             class="w-full bg-[#FFDD00] rounded-xl flex flex-col items-center justify-center text-gray-800 mb-6 p-6 relative overflow-hidden shadow-sm hover:shadow-md transition-all group hover:-translate-y-1 block cursor-pointer">
+            
+            <div class="relative z-10 flex flex-col items-center">
+              <span class="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-300">☕</span>
+              <span class="font-bold text-lg mb-1">Buy me a coffee</span>
+              <span class="text-sm font-medium text-gray-700 text-center">Support the developer to keep this tool free!</span>
+              
+              <div class="mt-4 px-6 py-2 bg-black text-white rounded-full font-bold text-sm shadow-md group-hover:bg-gray-800 transition-colors">
+                Support Now
               </div>
-           </div>
+            </div>
+
+            <!-- Decorative background circles -->
+            <div class="absolute -top-6 -left-6 w-24 h-24 bg-white opacity-20 rounded-full z-0 pointer-events-none"></div>
+            <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-white opacity-20 rounded-full z-0 pointer-events-none"></div>
+          </a>
 
            <p class="text-center text-gray-600 mb-6">
-             Your download is ready! Please support our free tool by checking out our sponsors.
+             Your download is ready! If you find this tool useful, consider supporting me.
            </p>
 
            <!-- Action Button -->
