@@ -986,10 +986,12 @@ const updateInvoice = () => {
     const success = invoiceStore.updateInvoice(invoiceId.value, invoice.value)
     if (success) {
       showToast('Invoice updated successfully!', 'success')
+
+      //no need to redirect to history page
       // Navigate to history page
-      setTimeout(() => {
-        router.push('/history')
-      }, 1500)
+      // setTimeout(() => {
+      //   router.push('/history')
+      // }, 1500)
     } else {
       showToast('Failed to update invoice', 'error')
     }
