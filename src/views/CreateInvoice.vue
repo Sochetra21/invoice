@@ -708,7 +708,7 @@
               <!-- Footer Watermark -->
               <div class="pt-6 border-t border-gray-200 text-center">
                 <p class="text-xs text-gray-400 mb-1">
-                  Generated with SwiftInvoice - Professional Invoice Solutions
+                  Generated with Invoxify - Professional Invoice Solutions
                 </p>
                 <button 
                   @click="showCoffeeModal = true"
@@ -1184,7 +1184,7 @@ const generateInvoiceHTML = () => {
 
       <!-- Footer -->
       <div style="padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center;">
-        <p style="font-size: 12px; color: #9ca3af; margin: 0; font-family: Arial, Helvetica, sans-serif;">Generated with SwiftInvoice - Professional Invoice Solutions</p>
+        <p style="font-size: 12px; color: #9ca3af; margin: 0; font-family: Arial, Helvetica, sans-serif;">Generated with Invoxify - Professional Invoice Solutions</p>
       </div>
     </div>
   `

@@ -16,7 +16,7 @@
             </svg>
           </div>
           <router-link to="/" class="text-lg sm:text-xl font-semibold text-gray-900">
-            SwiftInvoice
+            Invoxify
           </router-link>
         </div>
 
