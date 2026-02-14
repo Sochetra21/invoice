@@ -35,6 +35,8 @@
 <script setup>
 import { computed } from 'vue'
 
+const showAd = false
+
 const props = defineProps({
   size: {
     type: String,

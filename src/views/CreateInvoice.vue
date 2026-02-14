@@ -722,13 +722,13 @@
         </div>
       </div>
       <!-- Advertisement Space -->
-      <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+      <!-- <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
         <Adbanner size="leaderboard" />
-      </div>
+      </div> -->
     </div>
 
     <!-- Interstitial Ad Modal (for PDF downloads) -->
-    <AdModal :show="showAdModal" @close="handleAdClose" />
+    <!-- <AdModal :show="showAdModal" @close="handleAdClose" /> -->
     
     <!-- Buy Me Coffee Modal -->
     <BuyMeCoffee :show="showCoffeeModal" @close="showCoffeeModal = false" />

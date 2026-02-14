@@ -738,9 +738,9 @@
       </div>
 
       <!-- Advertisement Space -->
-      <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+      <!-- <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
         <Adbanner size="leaderboard" />
-      </div>
+      </div> -->
     </div>
 
     <!-- Ad Modal -->
