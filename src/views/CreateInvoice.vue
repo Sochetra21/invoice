@@ -727,11 +727,13 @@
       </div> -->
     </div>
 
-    <!-- Interstitial Ad Modal (for PDF downloads) -->
-    <!-- <AdModal :show="showAdModal" @close="handleAdClose" /> -->
+    <!-- PDF Download Nudge Modals are handled below -->
     
     <!-- Buy Me Coffee Modal -->
     <BuyMeCoffee :show="showCoffeeModal" @close="showCoffeeModal = false" />
+
+    <!-- Persuasive Nudge Modal -->
+    <PopupBMAC :show="showBMACNudge" @close="showBMACNudge = false" />
   </div>
 </template>
 
@@ -742,14 +744,15 @@ import { useInvoiceStore } from '@/stores/invoiceStore'
 import AdModal from '@/components/AdModal.vue'
 import Adbanner from '@/components/Adbanner.vue'
 import BuyMeCoffee from '@/components/BuyMeCoffee.vue'
+import PopupBMAC from '@/components/PopupBMAC.vue'
 
 // Router and Store
 const router = useRouter()
 const invoiceStore = useInvoiceStore()
 
 // Modal States
-const showAdModal = ref(false)
 const showCoffeeModal = ref(false)
+const showBMACNudge = ref(false)
 
 // Constants
 const STATUS = {
@@ -982,12 +985,14 @@ const saveInvoice = () => {
 // Handle download click with 60% chance of ad
 const handleDownloadClick = () => {
   if (isFormValid.value) {
-    const chance = Math.random()
-    if (chance < 0.6) {
-      showAdModal.value = true
-    } else {
-      downloadPDF()
+    // Track click and show persuasive nudge if it's the 5th, 20th, or 40th click
+    if (invoiceStore.incrementPdfClick()) {
+      showBMACNudge.value = true
+      return
     }
+
+    // Direct download (removed ad flow to prevent hangs)
+    downloadPDF()
   } else {
     showToast('Please fill in all required fields correctly', 'error')
   }

@@ -18,6 +18,18 @@ export const useInvoiceStore = defineStore('invoice', () => {
     }
   }
 
+  // PDF Click Tracking logic
+  const pdfClickCount = ref(parseInt(localStorage.getItem('pdfClickCount') || '0'))
+
+  const incrementPdfClick = () => {
+    pdfClickCount.value++
+    localStorage.setItem('pdfClickCount', pdfClickCount.value.toString())
+    
+    // Trigger ONLY at specific thresholds
+    const thresholds = [5, 20, 40]
+    return thresholds.includes(pdfClickCount.value)
+  }
+
   // Save invoices to localStorage
   const saveToStorage = () => {
     try {
@@ -103,6 +115,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
   return {
     // State
     invoices,
+    pdfClickCount,
     // Getters
     getInvoiceById,
     allInvoices,
@@ -113,5 +126,6 @@ export const useInvoiceStore = defineStore('invoice', () => {
     updateInvoice,
     deleteInvoice,
     loadInvoices,
+    incrementPdfClick
   }
 })

@@ -335,7 +335,7 @@
             Track and manage your generated invoices.
           </p>
         </div>
-        <router-link
+        <!-- <router-link
           to="/"
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm md:text-base"
         >
@@ -348,7 +348,7 @@
             />
           </svg>
           New Invoice
-        </router-link>
+        </router-link> -->
       </div>
 
       <!-- Stats Cards -->
@@ -764,12 +764,15 @@
         </div>
       </div>
 
-      <!-- Advertisement Space -->
-      <!-- <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
-        <Adbanner size="leaderboard" />
-      </div> -->
-    </div>
+    <!-- Advertisement Space -->
+    <!-- <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+      <Adbanner size="leaderboard" />
+    </div> -->
+
+    <!-- Persuasive Nudge Modal -->
+    <PopupBMAC :show="showBMACNudge" @close="showBMACNudge = false" />
   </div>
+</div>
 </template>
 
 <script setup>
@@ -777,6 +780,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoiceStore'
 import Adbanner from '@/components/Adbanner.vue'
+import PopupBMAC from '@/components/PopupBMAC.vue'
 
 // Router and Store
 const router = useRouter()
@@ -788,6 +792,7 @@ const statusFilter = ref('ALL')
 const showDeleteConfirm = ref(false)
 const invoiceToDelete = ref(null)
 const viewingInvoice = ref(null)
+const showBMACNudge = ref(false)
 
 // Toast notification
 const toast = ref({
@@ -1063,9 +1068,18 @@ const generateInvoiceHTML = (invoice) => {
   `
 }
 
-// Download invoice as PDF
+// Download single invoice PDF with click tracking
 const downloadInvoicePDF = async (invoice) => {
+  // Track click and show persuasive nudge if it's the 5th click
+  if (invoiceStore.incrementPdfClick()) {
+    showBMACNudge.value = true
+    return
+  }
+
+  isGeneratingPDF.value = true
   try {
+    // Modal might be open or closed, use the passed invoice
+    const data = invoice.data
     if (typeof window.html2pdf === 'undefined') {
       await loadScript(
         'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',

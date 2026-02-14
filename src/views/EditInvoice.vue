@@ -743,8 +743,10 @@
       </div> -->
     </div>
 
-    <!-- Ad Modal -->
-    <AdModal :show="showAdModal" @close="handleAdClose" />
+    <!-- PDF Download Nudge Modals are handled below -->
+
+    <!-- Persuasive Nudge Modal -->
+    <PopupBMAC :show="showBMACNudge" @close="showBMACNudge = false" />
   </div>
 </template>
 
@@ -754,14 +756,15 @@ import { useRouter, useRoute } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoiceStore'
 import AdModal from '@/components/AdModal.vue'
 import Adbanner from '@/components/Adbanner.vue'
+import PopupBMAC from '@/components/PopupBMAC.vue'
 
 // Router, Route and Store
 const router = useRouter()
 const route = useRoute()
 const invoiceStore = useInvoiceStore()
 
-// Ad Modal State
-const showAdModal = ref(false)
+// Modal States
+const showBMACNudge = ref(false)
 
 // Loading state
 const loading = ref(true)
@@ -995,12 +998,14 @@ const updateInvoice = () => {
 // Handle download click with 60% chance of ad
 const handleDownloadClick = () => {
   if (isFormValid.value) {
-    const chance = Math.random()
-    if (chance < 0.6) {
-      showAdModal.value = true
-    } else {
-      downloadPDF()
+    // Track click and show BMAC popup if it's the 5th, 20th, or 40th click
+    if (invoiceStore.incrementPdfClick()) {
+      showBMACNudge.value = true
+      return
     }
+
+    // Direct download (removed ad flow to prevent hangs)
+    downloadPDF()
   } else {
     showToast('Please fill in all required fields correctly', 'error')
   }
