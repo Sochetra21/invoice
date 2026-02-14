@@ -47,11 +47,11 @@ const props = defineProps({
 const hasAdCode = false
 
 const sizeConfig = {
-  'leaderboard': { width: '728px', height: '90px', maxWidth: '100%' },
-  'rectangle': { width: '300px', height: '250px', maxWidth: '100%' },
-  'banner': { width: '468px', height: '60px', maxWidth: '100%' },
-  'skyscraper': { width: '160px', height: '600px', maxWidth: '100%' },
-  'mobile-banner': { width: '320px', height: '50px', maxWidth: '100%' }
+  'leaderboard': { width: 728, height: 90 },
+  'rectangle': { width: 300, height: 250 },
+  'banner': { width: 468, height: 60 },
+  'skyscraper': { width: 160, height: 600 },
+  'mobile-banner': { width: 320, height: 50 }
 }
 
 const sizeClass = computed(() => `ad-banner-${props.size}`)
@@ -59,9 +59,10 @@ const sizeClass = computed(() => `ad-banner-${props.size}`)
 const bannerStyle = computed(() => {
   const config = sizeConfig[props.size] || sizeConfig.leaderboard
   return {
-    width: config.width,
-    height: config.height,
-    maxWidth: config.maxWidth
+    width: '100%',
+    maxWidth: `${config.width}px`,
+    aspectRatio: `${config.width} / ${config.height}`,
+    minHeight: '50px' // Prevent collapse on very small screens
   }
 })
 
@@ -77,12 +78,16 @@ const getSizeText = () => {
   justify-content: center;
   align-items: center;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 16px; /* Add horizontal padding */
+  box-sizing: border-box;
 }
 
 .ad-container {
   position: relative;
   overflow: hidden;
   border-radius: 8px;
+  box-sizing: border-box;
 }
 
 /* Placeholder shown until real ads are added */
@@ -97,6 +102,8 @@ const getSizeText = () => {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-height: 50px; /* Ensure minimum height on mobile */
+  box-sizing: border-box;
 }
 
 .placeholder-label {
@@ -112,10 +119,50 @@ const getSizeText = () => {
   color: #d1d5db;
 }
 
-/* Responsive */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .ad-banner-wrapper {
-    padding: 0 8px;
+    padding: 0 8px; /* Reduce padding on mobile */
+  }
+  
+  /* Make leaderboard ads more compact on mobile */
+  .ad-banner-leaderboard .ad-container {
+    max-width: 100%;
+  }
+  
+  /* Scale down text on very small screens */
+  .placeholder-label {
+    font-size: 9px;
+  }
+  
+  .placeholder-size {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ad-banner-wrapper {
+    padding: 0 4px; /* Even less padding on very small screens */
+  }
+  
+  /* Further reduce text size */
+  .placeholder-label {
+    font-size: 8px;
+  }
+  
+  .placeholder-size {
+    font-size: 7px;
+  }
+}
+
+/* Specific size adjustments for better mobile experience */
+.ad-banner-skyscraper {
+  display: none; /* Hide skyscrapers on mobile - they're too tall */
+}
+
+@media (min-width: 1024px) {
+  .ad-banner-skyscraper {
+    display: flex; /* Show on desktop */
   }
 }
 </style>

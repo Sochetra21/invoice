@@ -193,7 +193,7 @@
                   Remove
                 </button>
               </div>
-              <p class="text-xs text-gray-500 mt-1">Max 2MB, JPG/PNG/WEBP</p>
+              <p class="text-xs text-gray-500 mt-1">Max 5MB, JPG/PNG/WEBP</p>
             </div>
 
             <!-- Business Name -->
@@ -725,29 +725,21 @@
                 <p class="text-xs text-gray-400 mb-1">
                   Generated with SwiftInvoice - Professional Invoice Solutions
                 </p>
-                <router-link 
-                  to="/donation" 
-                  class="text-[10px] text-blue-400 hover:text-blue-600 transition"
+                <button 
+                  @click="$router.push('/donation')"
+                  class="text-[10px] text-blue-400 hover:text-blue-600 transition underline bg-transparent border-none p-0 cursor-pointer"
                 >
                   Support this free tool
-                </router-link>
-              </div>
-              <!-- Google AdSense Placeholder (Bottom) -->
-              <div class="mt-8 pt-6 border-t border-gray-100">
-                <!-- PASTE YOUR GOOGLE ADSENSE CODE HERE -->
-                <div class="w-full h-[90px] bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group">
-                  <span class="text-xs font-semibold uppercase tracking-wider mb-1">Advertisement Space</span>
-                  <span class="text-[10px] text-gray-400">728 x 90 Leaderboard</span>
-                  <div class="absolute inset-0 bg-gray-500 bg-opacity-0 group-hover:bg-opacity-5 transition-all flex items-center justify-center">
-                    <span class="opacity-0 group-hover:opacity-100 bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-200">
-                      Replace with AdSense Code
-                    </span>
-                  </div>
-                </div>
+                </button>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Advertisement Space -->
+      <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+        <Adbanner size="leaderboard" />
       </div>
     </div>
 
@@ -761,6 +753,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoiceStore'
 import AdModal from '@/components/AdModal.vue'
+import Adbanner from '@/components/Adbanner.vue'
 
 // Router, Route and Store
 const router = useRouter()
@@ -986,12 +979,6 @@ const updateInvoice = () => {
     const success = invoiceStore.updateInvoice(invoiceId.value, invoice.value)
     if (success) {
       showToast('Invoice updated successfully!', 'success')
-
-      //no need to redirect to history page
-      // Navigate to history page
-      // setTimeout(() => {
-      //   router.push('/history')
-      // }, 1500)
     } else {
       showToast('Failed to update invoice', 'error')
     }
@@ -1209,63 +1196,6 @@ const generateInvoiceHTML = () => {
       </div>
     </div>
   `
-}
-
-// Convert oklch and modern CSS colors to hex for html2canvas compatibility
-const convertColorsToHex = (element) => {
-  const colorMap = {
-    // Grays
-    'rgb(17, 24, 39)': '#111827',
-    'rgb(31, 41, 55)': '#1f2937',
-    'rgb(55, 65, 81)': '#374151',
-    'rgb(75, 85, 99)': '#4b5563',
-    'rgb(107, 114, 128)': '#6b7280',
-    'rgb(156, 163, 175)': '#9ca3af',
-    'rgb(209, 213, 219)': '#d1d5db',
-    'rgb(229, 231, 235)': '#e5e7eb',
-    'rgb(243, 244, 246)': '#f3f4f6',
-    'rgb(249, 250, 251)': '#f9fafb',
-    'rgb(255, 255, 255)': '#ffffff',
-    'rgb(0, 0, 0)': '#000000',
-
-    // Blues
-    'rgb(239, 246, 255)': '#eff6ff',
-    'rgb(219, 234, 254)': '#dbeafe',
-    'rgb(37, 99, 235)': '#2563eb',
-    'rgb(29, 78, 216)': '#1d4ed8',
-
-    // Greens
-    'rgb(220, 252, 231)': '#dcfce7',
-    'rgb(21, 128, 61)': '#15803d',
-    'rgb(22, 163, 74)': '#16a34a',
-
-    // Reds
-    'rgb(254, 226, 226)': '#fee2e2',
-    'rgb(220, 38, 38)': '#dc2626',
-  }
-
-  const allElements = element.querySelectorAll('*')
-  allElements.forEach((el) => {
-    const computed = window.getComputedStyle(el)
-
-    // Convert background colors
-    const bgColor = computed.backgroundColor
-    if (bgColor && bgColor.startsWith('rgb')) {
-      el.style.backgroundColor = colorMap[bgColor] || bgColor
-    }
-
-    // Convert text colors
-    const color = computed.color
-    if (color && color.startsWith('rgb')) {
-      el.style.color = colorMap[color] || color
-    }
-
-    // Convert border colors
-    const borderColor = computed.borderColor
-    if (borderColor && borderColor.startsWith('rgb')) {
-      el.style.borderColor = colorMap[borderColor] || borderColor
-    }
-  })
 }
 
 // Load external script dynamically

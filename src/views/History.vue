@@ -327,8 +327,6 @@
         </div>
       </transition>
 
-
-
       <!-- Page Header -->
       <div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -766,36 +764,19 @@
         </div>
       </div>
 
-      <!-- Google AdSense Placeholder -->
-      <div class="mt-8 mb-6">
-        <!-- PASTE YOUR GOOGLE ADSENSE CODE HERE -->
-        <!-- Example:
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        -->
-        
-        <!-- Visual Placeholder for Development -->
-        <div class="w-full h-[90px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-400 overflow-hidden relative group">
-          <span class="text-xs font-semibold uppercase tracking-wider mb-1">Advertisement Space</span>
-          <span class="text-[10px] text-gray-400">728 x 90 Leaderboard</span>
-          
-          <!-- Hover effect to show it's editable -->
-          <div class="absolute inset-0 bg-gray-500 bg-opacity-0 group-hover:bg-opacity-5 transition-all flex items-center justify-center">
-            <span class="opacity-0 group-hover:opacity-100 bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-200">
-              Replace with AdSense Code
-            </span>
-          </div>
-        </div>
+      <!-- Advertisement Space -->
+      <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+        <Adbanner size="leaderboard" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoiceStore'
+import Adbanner from '@/components/Adbanner.vue'
 
 // Router and Store
 const router = useRouter()
@@ -950,7 +931,7 @@ const editInvoice = (invoice) => {
   router.push(`/edit/${invoice.id}`)
 }
 
-// UPDATE the generateInvoiceHTML function to match the invoice creation page design:
+// Generate invoice HTML for PDF
 const generateInvoiceHTML = (invoice) => {
   const data = invoice.data
   const currencySymbol = getCurrencySymbol(data.currency)
@@ -1082,7 +1063,7 @@ const generateInvoiceHTML = (invoice) => {
   `
 }
 
-// UPDATE downloadInvoicePDF to use simpler approach:
+// Download invoice as PDF
 const downloadInvoicePDF = async (invoice) => {
   try {
     if (typeof window.html2pdf === 'undefined') {
@@ -1127,73 +1108,6 @@ const downloadInvoicePDF = async (invoice) => {
   }
 }
 
-
-// Create invoice element for PDF
-const createInvoiceElement = (invoice) => {
-  const div = document.createElement('div')
-  div.className = 'bg-white p-10'
-  div.style.width = '210mm'
-  div.innerHTML = generateInvoiceHTML(invoice)
-  return div
-}
-
-// Convert oklch and modern CSS colors to hex for html2canvas compatibility
-const convertColorsToHex = (element) => {
-  const colorMap = {
-    // Grays
-    'rgb(17, 24, 39)': '#111827',
-    'rgb(31, 41, 55)': '#1f2937',
-    'rgb(55, 65, 81)': '#374151',
-    'rgb(75, 85, 99)': '#4b5563',
-    'rgb(107, 114, 128)': '#6b7280',
-    'rgb(156, 163, 175)': '#9ca3af',
-    'rgb(209, 213, 219)': '#d1d5db',
-    'rgb(229, 231, 235)': '#e5e7eb',
-    'rgb(243, 244, 246)': '#f3f4f6',
-    'rgb(249, 250, 251)': '#f9fafb',
-    'rgb(255, 255, 255)': '#ffffff',
-    'rgb(0, 0, 0)': '#000000',
-
-    // Blues
-    'rgb(239, 246, 255)': '#eff6ff',
-    'rgb(219, 234, 254)': '#dbeafe',
-    'rgb(37, 99, 235)': '#2563eb',
-    'rgb(29, 78, 216)': '#1d4ed8',
-
-    // Greens
-    'rgb(220, 252, 231)': '#dcfce7',
-    'rgb(21, 128, 61)': '#15803d',
-    'rgb(22, 163, 74)': '#16a34a',
-
-    // Reds
-    'rgb(254, 226, 226)': '#fee2e2',
-    'rgb(220, 38, 38)': '#dc2626',
-  }
-
-  const allElements = element.querySelectorAll('*')
-  allElements.forEach((el) => {
-    const computed = window.getComputedStyle(el)
-
-    // Convert background colors
-    const bgColor = computed.backgroundColor
-    if (bgColor && bgColor.startsWith('rgb')) {
-      el.style.backgroundColor = colorMap[bgColor] || bgColor
-    }
-
-    // Convert text colors
-    const color = computed.color
-    if (color && color.startsWith('rgb')) {
-      el.style.color = colorMap[color] || color
-    }
-
-    // Convert border colors
-    const borderColor = computed.borderColor
-    if (borderColor && borderColor.startsWith('rgb')) {
-      el.style.borderColor = colorMap[borderColor] || borderColor
-    }
-  })
-}
-
 // Load external script
 const loadScript = (src) => {
   return new Promise((resolve, reject) => {
@@ -1204,14 +1118,6 @@ const loadScript = (src) => {
     document.head.appendChild(script)
   })
 }
-
-const clearFilters = () => {
-  searchQuery.value = ''
-  statusFilter.value = 'ALL'
-}
-
-// Invoices are automatically loaded from store
-
 </script>
 
 <style scoped>

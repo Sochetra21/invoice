@@ -178,7 +178,7 @@
                   Remove
                 </button>
               </div>
-              <p class="text-xs text-gray-500 mt-1">Max 2MB, JPG/PNG/WEBP</p>
+              <p class="text-xs text-gray-500 mt-1">Max 5MB, JPG/PNG/WEBP</p>
             </div>
 
             <!-- Business Name -->
