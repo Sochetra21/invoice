@@ -69,7 +69,7 @@
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4 mt-auto">
       <div class="max-w-7xl mx-auto text-center text-xs sm:text-sm text-gray-600">
-        © 2026 SwiftInvoice. All data is saved locally in your browser.
+        © 2026 Invoxify. All data is saved locally in your browser.
       </div>
     </footer>
 
